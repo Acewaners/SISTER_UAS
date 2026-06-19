@@ -164,8 +164,8 @@ konsistensi `/stats`, dan stress kecil.
 - `/publish` bersifat *batch-atomic* untuk tahap validasi & audit-log
   (`received_log`); kebijakan ini didokumentasikan di `report.md` Bagian I, T8.
 - Network Compose tidak diset `internal: true` secara penuh agar host
-  (untuk demo & test) dapat menjangkau `aggregator:8080`; tidak ada
+  (untuk demo & test) dapat menjangkau `aggregator:8082`; tidak ada
   dependensi ke layanan publik eksternal mana pun saat runtime.
+
 ## Video Demo
- 
-[ISI LINK YOUTUBE DI SINI]
+ [ISI LINK YOUTUBE DI SINI]
