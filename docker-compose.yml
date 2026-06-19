@@ -1,0 +1,81 @@
+services:
+  storage:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  broker:
+    image: redis:7-alpine
+    volumes:
+      - broker_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  aggregator:
+    build: ./aggregator
+    image: uas-aggregator:latest
+    depends_on:
+      storage:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://user:pass@storage:5432/db
+      - REDIS_URL=redis://broker:6379
+      - NUM_WORKERS=4
+      - SERVICE_NAME=aggregator-1
+    ports:
+      - "8082:8080"   # only port exposed to the host, for local demo access
+    volumes:
+      - aggregator_data:/var/lib/aggregator
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  publisher:
+    build: ./publisher
+    image: uas-publisher:latest
+    depends_on:
+      aggregator:
+        condition: service_healthy
+    environment:
+      - TARGET_URL=http://aggregator:8080/publish
+      - NUM_EVENTS=20000
+      - DUPLICATE_RATE=0.30
+      - BATCH_SIZE=50
+      - CONCURRENCY=8
+    networks:
+      - internal
+    # one-shot load generator; run on demand with: docker compose run --rm publisher
+
+networks:
+  internal:
+    driver: bridge
+    internal: false   # set true to fully air-gap; false here only so the
+                       # host can reach aggregator:8080 for the demo & tests
+
+volumes:
+  pg_data:
+  broker_data:
+  aggregator_data:
