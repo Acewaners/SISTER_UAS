@@ -42,7 +42,7 @@ Realisasi langsung dari T2 (publish-subscribe untuk decoupling) dan T1 (tolerans
 | `COUNT(*)` untuk `/stats`, bukan counter manual | Hindari lost-update | T8 |
 | `INSERT...ON CONFLICT DO NOTHING` + READ COMMITTED | Idempotent upsert, hindari deadlock locking | T9 |
 | Volume `pg_data`, `broker_data` | Persistensi lintas restart | T10 |
-| Network `internal`, hanya port 8080(host) terbuka | Isolasi jaringan | T10 |
+| Network `internal`, hanya port 8082(host) terbuka | Isolasi jaringan | T10 |
  
 ## 3. Hasil Pengujian (17 test)
  
