@@ -168,4 +168,4 @@ konsistensi `/stats`, dan stress kecil.
   dependensi ke layanan publik eksternal mana pun saat runtime.
 
 ## Video Demo
- [ISI LINK YOUTUBE DI SINI]
+https://youtu.be/fFKalsSMn2k?si=VjRZ3WgcqDOdlNHr
