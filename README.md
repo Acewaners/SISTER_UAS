@@ -55,7 +55,7 @@ flowchart LR
 docker compose up --build
 ```
  
-Aggregator dapat diakses di `http://localhost:8080` secara default. Hanya
+Aggregator dapat diakses di `http://localhost:8082` secara default. Hanya
 port aggregator yang dipublikasikan ke host; `storage` dan `broker` hanya
 bisa diakses lewat jaringan internal Compose (`internal` network).
  
